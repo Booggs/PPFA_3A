@@ -157,7 +157,8 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-            CameraRotation();
+            if (!_zeroGravity)
+                CameraRotation();
         }
 
         private void GroundedCheck()
