@@ -15,14 +15,14 @@ public class ZeroGravityZone : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (_boxCollider == null) return;
-        var customGravity = other.GetComponent<CustomGravity>();
+        var customGravity = other.GetComponent<CustomPlayerGravity>();
         customGravity.EnableZeroGravity(true);
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (_boxCollider == null) return;
-        var customGravity = other.GetComponent<CustomGravity>();
+        var customGravity = other.GetComponent<CustomPlayerGravity>();
         customGravity.EnableZeroGravity(false);
     }
 }
