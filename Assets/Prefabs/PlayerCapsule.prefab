@@ -137,6 +137,8 @@ GameObject:
   - component: {fileID: 8997996947095583982}
   - component: {fileID: 8616685848737228382}
   - component: {fileID: 8616685848737228371}
+  - component: {fileID: 6546551391797247610}
+  - component: {fileID: 1333752084166695669}
   - component: {fileID: 1978471637655604388}
   - component: {fileID: 5420857361349278248}
   - component: {fileID: 8616685848737228376}
@@ -198,7 +200,6 @@ MonoBehaviour:
   RotationSpeed: 1
   SpeedChangeRate: 10
   JumpHeight: 1.2
-  Gravity: -15
   JumpTimeout: 0.1
   FallTimeout: 0.15
   Grounded: 1
@@ -210,6 +211,47 @@ MonoBehaviour:
   CinemachineCameraTarget: {fileID: 4135013735270702863}
   TopClamp: 89
   BottomClamp: -89
+--- !u!114 &6546551391797247610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8616685848737228372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 336a61647f9399840a73d8660f379f1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 4
+  SprintSpeed: 6
+  RotationSpeed: 1
+  SpeedChangeRate: 10
+  JumpHeight: 3
+  JumpTimeout: 0.1
+  FallTimeout: 0.15
+  Grounded: 1
+  GroundedOffset: -0.14
+  GroundedRadius: 0.5
+  GroundLayers:
+    serializedVersion: 2
+    m_Bits: 513
+  CinemachineCameraTarget: {fileID: 4135013735270702863}
+  TopClamp: 89
+  BottomClamp: -89
+--- !u!114 &1333752084166695669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8616685848737228372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43032ce37c009c14eb249a1cef82ce11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gravityStrength: 15
 --- !u!114 &1978471637655604388
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
     [RequireComponent(typeof(PlayerInput))]
 #endif
-    public class FirstPersonController : MonoBehaviour
+    public class ZeroGravityController : MonoBehaviour
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -95,14 +95,6 @@ namespace StarterAssets
         }
 
         #region Callbacks 
-        //  Gravity change is deprecated
-        //     private void GravityChange(CustomGravity.GravityChangeArgs args)
-        //     {
-        //         _gravityStrength = args.gravityStrength;
-        //         _gravityDirection = args.gravityDirection;
-        //Debug.Log("new direction : " + args.gravityDirection);
-        //     }
-
         private void ZeroGravityEnable(bool enable)
         {
             _zeroGravity = enable;
@@ -145,9 +137,10 @@ namespace StarterAssets
             _customPlayerGravity.SetZeroGravity -= ZeroGravityEnable;
         }
 
+
         private void Update()
         {
-            if (!_zeroGravity)
+            if (_zeroGravity)
             {
                 JumpAndGravity();
                 GroundedCheck();
