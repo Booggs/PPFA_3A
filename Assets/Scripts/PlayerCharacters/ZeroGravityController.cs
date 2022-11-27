@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using TMPro;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
 
 namespace StarterAssets
 {
-    [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(CustomPlayerGravity))]
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
     [RequireComponent(typeof(PlayerInput))]
 #endif
     public class ZeroGravityController : MonoBehaviour
     {
-        /// <summary>
-        /// TODO : Convertir la direction globale en direction locale dans le Move() car la classe Controller est difficilement editable
-        /// </summary>
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 4.0f;
@@ -27,8 +29,27 @@ namespace StarterAssets
         [Tooltip("Rotation speed of the character")]
         public float RotationSpeed = 1.0f;
 
-        [Tooltip("Acceleration and deceleration")]
-        public float SpeedChangeRate = 10.0f;
+
+        [Space(10)]
+        [Tooltip("The height the player can jump")]
+        public float JumpHeight = 1.2f;
+
+
+        [Space(10)]
+        [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
+        public float JumpTimeout = 0.1f;
+        [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
+        public float FallTimeout = 0.15f;
+
+        [Header("Player Grounded")]
+        [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
+        public bool Grounded = true;
+        [Tooltip("Useful for rough ground")]
+        public float GroundedOffset = -0.14f;
+        [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
+        public float GroundedRadius = 0.5f;
+        [Tooltip("What layers the character uses as ground")]
+        public LayerMask GroundLayers;
 
         [Header("Cinemachine")]
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
@@ -45,17 +66,27 @@ namespace StarterAssets
         private float _speed;
         private float _rotationVelocity;
         private float _verticalVelocity;
+        private readonly float _terminalVelocity = 53.0f;
         private bool _zeroGravity = false;
+        private Vector3 _groundDirection = new Vector3(0.0f, 0.0f, 0.0f);
+
+        
+        private float _jumpTimeoutDelta;
+        private float _fallTimeoutDelta;
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
 #endif
-        private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
         private CustomPlayerGravity _customPlayerGravity;
+        private Rigidbody _rigidbody = null;
 
         private const float _threshold = 0.01f;
+
+        public delegate void PauseMenuPerformedEvent();
+
+        public event PauseMenuPerformedEvent PauseMenuPerformed = null;
 
         private bool IsCurrentDeviceMouse
         {
@@ -73,6 +104,8 @@ namespace StarterAssets
         private void ZeroGravityEnable(bool enable)
         {
             _zeroGravity = enable;
+            _rigidbody.useGravity = !_zeroGravity;
+            _rigidbody.isKinematic = !_zeroGravity;
         }
         #endregion
 
@@ -84,17 +117,19 @@ namespace StarterAssets
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
             _customPlayerGravity = GetComponent<CustomPlayerGravity>();
+            _rigidbody = GetComponent<Rigidbody>();
         }
 
         private void Start()
         {
-            _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
             _playerInput = GetComponent<PlayerInput>();
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
+            _jumpTimeoutDelta = JumpTimeout;
+            _fallTimeoutDelta = FallTimeout;
         }
 
         private void OnEnable()
@@ -109,19 +144,24 @@ namespace StarterAssets
         }
 
 
-        private void Update()
+        private void FixedUpdate()
         {
-            if (_zeroGravity)
-            {
-                JumpAndGravity();
-                Move();
-            }
+            JumpAndGravity();
+            GroundedCheck();
+            ElevationCheck();
+            Move();
         }
 
         private void LateUpdate()
         {
-            if (_zeroGravity)
-                CameraRotation();
+            CameraRotation();
+        }
+
+        private void GroundedCheck()
+        {
+            // set sphere position, with offset
+            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
+            Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
         }
 
         private void CameraRotation()
@@ -146,37 +186,57 @@ namespace StarterAssets
             }
         }
 
-        private void Move()
+        private void JumpAndGravity()
         {
-            // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
-
-            // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
-
-            // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            // if there is no input, set the target speed to 0
-            if (_input.move == Vector2.zero) targetSpeed = 0.0f;
-
-            // a reference to the players current horizontal velocity
-            float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
-
-            float speedOffset = 0.1f;
-            float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
-
-            // accelerate or decelerate to target speed
-            if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
+            if (Grounded)
             {
-                // creates curved result rather than a linear one giving a more organic speed change
-                // note T in Lerp is clamped, so we don't need to clamp our speed
-                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
+                // reset the fall timeout timer
+                _fallTimeoutDelta = FallTimeout;
 
-                // round speed to 3 decimal places
-                _speed = Mathf.Round(_speed * 1000f) / 1000f;
+                // stop our velocity dropping infinitely when grounded
+                if (_verticalVelocity < 0.0f)
+                {
+                    _verticalVelocity = 0.0f;
+                }
+
+                // Jump
+                if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+                {
+                    // the square root of H * -2 * G = how much velocity needed to reach desired height
+                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * _customPlayerGravity.GravityStrength);
+                }
+
+                // jump timeout
+                if (_jumpTimeoutDelta >= 0.0f)
+                {
+                    _jumpTimeoutDelta -= Time.deltaTime;
+                }
             }
             else
             {
-                _speed = targetSpeed;
+                // reset the jump timeout timer
+                _jumpTimeoutDelta = JumpTimeout;
+
+                // fall timeout
+                if (_fallTimeoutDelta >= 0.0f)
+                {
+                    _fallTimeoutDelta -= Time.deltaTime;
+                }
+
+                // if we are not grounded, do not jump
+                _input.jump = false;
             }
+
+            // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
+            if (_verticalVelocity < _terminalVelocity && !Grounded)
+            {
+                _verticalVelocity += _customPlayerGravity.GravityStrength * Time.deltaTime;
+            }
+        }
+
+        private void Move()
+        {
+            _speed = _input.sprint ? SprintSpeed : MoveSpeed;
 
             // normalise input direction
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
@@ -190,19 +250,52 @@ namespace StarterAssets
             }
 
             // move the player
-            _controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            if (_zeroGravity == false)
+            {
+                _rigidbody.MovePosition(inputDirection * (_speed * Time.fixedDeltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.fixedDeltaTime + transform.position);
+            }
+            else
+            { 
+                _rigidbody.AddForce(inputDirection.normalized * (_speed * Time.fixedDeltaTime));
+            }
         }
 
-        private void JumpAndGravity()
+        private void ElevationCheck()
         {
-            _verticalVelocity = 0.0f;
-        }
+            Vector3 checkDirection;
+            Vector3 checkLocation;
 
+            checkDirection = new Vector3(_rigidbody.velocity.normalized.x, 0.0f, _rigidbody.velocity.normalized.z);
+            checkLocation = new Vector3(transform.position.x, transform.position.y - 1.0f, transform.position.z);
+
+            RaycastHit hitInfo;
+            if (Physics.Linecast(checkLocation, checkLocation + checkDirection * 0.5f, out hitInfo))
+            {
+                Debug.Log(Vector3.Dot(checkDirection, hitInfo.normal));
+            }
+            else
+            {
+                _groundDirection = Vector3.zero;
+            }
+        }
+        
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
             if (lfAngle < -360f) lfAngle += 360f;
             if (lfAngle > 360f) lfAngle -= 360f;
             return Mathf.Clamp(lfAngle, lfMin, lfMax);
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
+            Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
+
+            if (Grounded) Gizmos.color = transparentGreen;
+            else Gizmos.color = transparentRed;
+
+            // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
+            Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
         }
     }
 }
