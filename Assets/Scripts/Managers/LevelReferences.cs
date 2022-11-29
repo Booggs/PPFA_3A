@@ -14,7 +14,7 @@ public class LevelReferences : Singleton<LevelReferences>
 {
 
     [SerializeField]
-    private ZeroGravityController _player = null;
+    private RobotBaseController _player = null;
 
     [SerializeField]
     private Camera _mainCamera = null;
@@ -23,7 +23,7 @@ public class LevelReferences : Singleton<LevelReferences>
     private UIManager _uiManager = null;
 
 
-    public ZeroGravityController Player => _player;
+    public RobotBaseController Player => _player;
     public Camera Camera => _mainCamera;
     public UIManager UIManager => _uiManager;
 
@@ -36,5 +36,10 @@ public class LevelReferences : Singleton<LevelReferences>
         {
             Gamepad.current.SetMotorSpeeds(0f, 0f);
         }
+    }
+
+    public void ChangeController(RobotBaseController controller)
+    {
+        _player = controller;
     }
 }

@@ -7,15 +7,15 @@ using UnityEngine;
 public class CustomPlayerGravity : MonoBehaviour
 {
     [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
-    [SerializeField] private float _gravityStrength = 15.0f;
+    [SerializeField] private float _gravityStrength = -15.0f;
 
     private bool _zeroGravity = false;
-    //private Vector3 _gravityDirection = new Vector3(0.0f, -1.0f, 0.0f);
-    private float _startingGravityStrength = 15.0f;
+    private bool _invertGravity = false;
+    private float _startingGravityStrength = -15.0f;
 
     public float GravityStrength => _gravityStrength;
-    //public Vector3 GravityDirection => _gravityDirection;
     public bool ZeroGravity => _zeroGravity;
+    public bool InvertGravity => _invertGravity;
 
     #region Deprecated Gravity Direction Change
 
@@ -43,18 +43,31 @@ public class CustomPlayerGravity : MonoBehaviour
     #endregion
 
     public delegate void SetZeroGravityEvent(bool zeroGravity);
+    public delegate void SetInvertGravityEvent(CustomPlayerGravity customGravity, bool invertGravity);
+
 
     public event SetZeroGravityEvent SetZeroGravity = null;
+    public event SetInvertGravityEvent SetInvertGravity = null;
 
-    private void OnStart()
+    private void Start()
     {
         _startingGravityStrength = _gravityStrength;
     }
 
     public void EnableZeroGravity(bool zeroGravity)
     {
-        SetZeroGravity.Invoke(zeroGravity);
         _zeroGravity = zeroGravity;
         _gravityStrength = _zeroGravity == true ? 0.0f : 15.0f;
+        SetZeroGravity.Invoke(zeroGravity);
+    }
+
+    public void EnableInvertGravity(bool invertGravity)
+    {
+        if (invertGravity == _invertGravity) return;
+        _invertGravity = invertGravity;
+
+        _gravityStrength = _invertGravity == true ? _startingGravityStrength * -1.0f : _startingGravityStrength * 1.0f;
+        transform.Rotate(new Vector3(0.0f, 0.0f, 1.0f), 180);
+        SetInvertGravity.Invoke(this, _invertGravity);
     }
 }

@@ -23,7 +23,7 @@ public class UIManager : MonoBehaviour
 
 
     private bool _paused = false;
-    private ZeroGravityController _playerController = null;
+    private RobotBaseController _playerController = null;
 
     public Canvas MainCanvas => _mainCanvas;
     public PlayerHUDMenu PlayerHUD => _playerHUD;
