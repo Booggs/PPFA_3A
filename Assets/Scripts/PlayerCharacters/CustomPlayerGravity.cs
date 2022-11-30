@@ -9,6 +9,7 @@ public class CustomPlayerGravity : MonoBehaviour
     [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
     [SerializeField] private float _gravityStrength = -15.0f;
 
+    private bool _customGravityActive = true;
     private bool _zeroGravity = false;
     private bool _invertGravity = false;
     private float _startingGravityStrength = -15.0f;
@@ -16,6 +17,18 @@ public class CustomPlayerGravity : MonoBehaviour
     public float GravityStrength => _gravityStrength;
     public bool ZeroGravity => _zeroGravity;
     public bool InvertGravity => _invertGravity;
+
+    public bool CustomGravityActive
+    {
+        get
+        {
+            return _customGravityActive;
+        }
+        set
+        {
+            _customGravityActive = value;
+        }
+    }
 
     #region Deprecated Gravity Direction Change
 
@@ -56,6 +69,7 @@ public class CustomPlayerGravity : MonoBehaviour
 
     public void EnableZeroGravity(bool zeroGravity)
     {
+        if (_customGravityActive == false) return;
         _zeroGravity = zeroGravity;
         _gravityStrength = _zeroGravity == true ? 0.0f : 15.0f;
         SetZeroGravity.Invoke(zeroGravity);
@@ -63,7 +77,7 @@ public class CustomPlayerGravity : MonoBehaviour
 
     public void EnableInvertGravity(bool invertGravity)
     {
-        if (invertGravity == _invertGravity) return;
+        if (invertGravity == _invertGravity || _customGravityActive == false) return;
         _invertGravity = invertGravity;
 
         _gravityStrength = _invertGravity == true ? _startingGravityStrength * -1.0f : _startingGravityStrength * 1.0f;

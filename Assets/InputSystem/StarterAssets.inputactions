@@ -42,15 +42,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Rotate",
-                    "type": "Value",
-                    "id": "57852479-cb14-4d2c-a456-3548b01e5243",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "VerticalMove",
                     "type": "Value",
                     "id": "2a447350-b6c4-4c9e-80cd-fd4b29e9e5c9",
@@ -63,6 +54,33 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "4024eac5-3098-483d-95d1-305335b8b7d4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SwapTank",
+                    "type": "Button",
+                    "id": "d9a74afc-a1fe-44a8-9a1a-f83c51e393a1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SwapHacker",
+                    "type": "Button",
+                    "id": "7021949a-d6a4-405f-a252-00ab121c794a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SwapDrone",
+                    "type": "Button",
+                    "id": "084b7d10-6333-4de6-a6ed-d92c913c6365",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -247,39 +265,6 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Left/Right",
-                    "id": "6823f06c-a671-44ae-9387-65a014928618",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotate",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "1d6aae08-2b09-4e1c-927a-1ffd0146fcc4",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "KeyboardMouse",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "ef99496c-4e0d-48f9-8e9f-48fba69e49d0",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "KeyboardMouse",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "Up/Down [Keyboard]",
                     "id": "7637067d-c689-4587-ab10-2ef31d05e3c6",
                     "path": "1DAxis",
@@ -353,6 +338,50 @@
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f7932f1-95d6-46fa-8803-e18667691eea",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5698525d-309e-4cbc-805a-0fbd35756d15",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "SwapTank",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "72647933-bf3c-4bdf-8e32-dad171255e55",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "SwapHacker",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4ba1c723-347e-409e-94d9-863b5d5274aa",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "SwapDrone",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

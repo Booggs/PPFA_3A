@@ -28,7 +28,7 @@ public class HealthBarHUDMenu : MonoBehaviour
 
     private void Awake()
     {
-        _damageable = LevelReferences.Instance.Player.GetComponent<Damageable>();
+        _damageable = LevelReferences.Instance.CurrentController.GetComponent<Damageable>();
         //_canvasGroup.alpha = 0;
     }
 

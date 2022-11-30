@@ -10,23 +10,23 @@ using UnityEngine.InputSystem;
 namespace StarterAssets
 {
     [RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-    [RequireComponent(typeof(PlayerInput))]
-#endif
+
     public class RobotBaseController : MonoBehaviour
     {
-        [Header("Player")]
+        public ERobotType RobotType = ERobotType.Drone;
+
+        [Header("CurrentController")]
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 4.0f;
 
-        [Tooltip("Sprint speed of the character in m/s")]
-        public float SprintSpeed = 6.0f;
+        //[Tooltip("Sprint speed of the character in m/s")]
+        //private float SprintSpeed = 6.0f;
 
         [Tooltip("Rotation speed of the character")]
         public float RotationSpeed = 1.0f;
 
         [Tooltip("Acceleration and deceleration")]
-        public float SpeedChangeRate = 10.0f;
+        public float SpeedChangeRate = 1000.0f;
 
         [Space(10)]
         [Tooltip("The height the player can jump")]
@@ -39,7 +39,7 @@ namespace StarterAssets
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         public float FallTimeout = 0.15f;
 
-        [Header("Player Grounded")]
+        [Header("CurrentController Grounded")]
         [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
         public bool Grounded = true;
         [Tooltip("Useful for rough ground")]
@@ -57,13 +57,14 @@ namespace StarterAssets
         [Tooltip("How far in degrees can you move the camera down")]
         public float BottomClamp = -90.0f;
 
+
         // cinemachine
         private float _cinemachineTargetPitch;
 
         // player
+        protected float _verticalVelocity;
         private float _speed;
         private float _rotationVelocity;
-        private float _verticalVelocity;
         private float _groundedOffset;
         private readonly float _terminalVelocity = 53.0f;
         private bool _invertGravity = false;
@@ -76,13 +77,14 @@ namespace StarterAssets
 
         private float _gravityStrength = -15.0f;
 
+        protected StarterAssetsInputs Input;
+
+        protected CustomPlayerGravity _customPlayerGravity;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-        private PlayerInput _playerInput;
+        protected PlayerInput PlayerInput;
 #endif
         private CharacterController _controller;
-        private StarterAssetsInputs _input;
         private GameObject _mainCamera;
-        private CustomPlayerGravity _customPlayerGravity;
         private Timer _invertGravityTimer = new Timer();
 
         private const float _threshold = 0.01f;
@@ -98,7 +100,7 @@ namespace StarterAssets
             get
             {
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-                return _playerInput.currentControlScheme == "KeyboardMouse";
+                return PlayerInput.currentControlScheme == "KeyboardMouse";
 #else
 				return false;
 #endif
@@ -114,7 +116,7 @@ namespace StarterAssets
             _groundedOffset *= -1;
             _invertGravityTimer.Start(1.0f);
             _controller.SimpleMove(_velocity * 50.0f);
-            _playerInput.DeactivateInput();
+            PlayerInput.DeactivateInput();
         }
         #endregion
 
@@ -128,12 +130,12 @@ namespace StarterAssets
             _customPlayerGravity = GetComponent<CustomPlayerGravity>();
         }
 
-        private void Start()
+        protected void Start()
         {
             _controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
+            Input = LevelReferences.Instance.Input;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-            _playerInput = GetComponent<PlayerInput>();
+            PlayerInput = LevelReferences.Instance.PlayerInput;
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
@@ -141,9 +143,9 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+
             _groundedOffset = GroundedOffset;
             _gravityStrength = _customPlayerGravity.GravityStrength;
-            _invertGravityTimer.Start(1.0f);
             _previousPosition = transform.position;
         }
 
@@ -158,7 +160,7 @@ namespace StarterAssets
             _customPlayerGravity.SetInvertGravity -= InvertGravityEnable;
         }
 
-        private void Update()
+        protected void Update()
         {
             CalculateVelocity();
             JumpAndGravity();
@@ -166,7 +168,7 @@ namespace StarterAssets
             Move();
             if (_invertGravityTimer.Update() && _invertGravityTimer.CurrentState == Timer.State.Finished)
             {
-                _playerInput.ActivateInput();
+                PlayerInput.ActivateInput();
             }
         }
 
@@ -185,13 +187,13 @@ namespace StarterAssets
         private void CameraRotation()
         {
             // if there is an input
-            if (_input.look.sqrMagnitude >= _threshold)
+            if (Input.look.sqrMagnitude >= _threshold)
             {
                 //Don't multiply mouse input by Time.deltaTime
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                _cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
-                _rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
+                _cinemachineTargetPitch += Input.look.y * RotationSpeed * deltaTimeMultiplier;
+                _rotationVelocity = Input.look.x * RotationSpeed * deltaTimeMultiplier;
 
                 // clamp our pitch rotation
                 _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
@@ -204,22 +206,22 @@ namespace StarterAssets
             }
         }
 
-        private void Move()
+        protected void Move()
         {
-            // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            // set target speed based on move speed, sprint is disabled
+            float targetSpeed = MoveSpeed; //Input.sprint ? SprintSpeed : MoveSpeed;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
             // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
-            if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+            if (Input.move == Vector2.zero) targetSpeed = 0.0f;
 
             // a reference to the players current horizontal velocity
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
             float speedOffset = 0.1f;
-            float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+            float inputMagnitude = Input.analogMovement ? Input.move.magnitude : 1f;
 
             // accelerate or decelerate to target speed
             if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
@@ -237,21 +239,21 @@ namespace StarterAssets
             }
 
             // normalise input direction
-            Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+            Vector3 inputDirection = new Vector3(Input.move.x, 0.0f, Input.move.y).normalized;
 
             // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is a move input rotate player when the player is moving
-            if (_input.move != Vector2.zero)
+            if (Input.move != Vector2.zero)
             {
                 // move
-                inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
+                inputDirection = transform.right * Input.move.x + transform.forward * Input.move.y;
             }
-
+            
             // move the player
             _controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
 
-        private void JumpAndGravity()
+        protected void JumpAndGravity()
         {
             if (Grounded)
             {
@@ -265,11 +267,10 @@ namespace StarterAssets
                 }
 
                 // Jump
-                if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+                if (Input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2.0f * Mathf.Abs(_gravityStrength) * -1.0f) * (_invertGravity == true ? -1.0f : 1.0f);
-                    Debug.Log(_verticalVelocity);
                 }
 
                 // jump timeout
@@ -290,7 +291,7 @@ namespace StarterAssets
                 }
 
                 // if we are not grounded, do not jump
-                _input.jump = false;
+                Input.jump = false;
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
@@ -307,7 +308,7 @@ namespace StarterAssets
             }
         }
 
-        private void CalculateVelocity()
+        protected void CalculateVelocity()
         {
             _velocity = (transform.position - _previousPosition) / Time.deltaTime;
             _previousPosition = transform.position;
@@ -325,9 +326,8 @@ namespace StarterAssets
             Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
             Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
 
-            if (Grounded) Gizmos.color = transparentGreen;
-            else Gizmos.color = transparentRed;
-
+            Gizmos.color = Grounded ? transparentGreen : transparentRed;
+            _groundedOffset = GroundedOffset;
             // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
             Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - _groundedOffset, transform.position.z), GroundedRadius);
         }

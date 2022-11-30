@@ -19,7 +19,7 @@ namespace StarterAssets
 #endif
     public class ZeroGravityController : MonoBehaviour
     {
-        [Header("Player")]
+        [Header("CurrentController")]
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 4.0f;
 
@@ -41,7 +41,7 @@ namespace StarterAssets
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         public float FallTimeout = 0.15f;
 
-        [Header("Player Grounded")]
+        [Header("CurrentController Grounded")]
         [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
         public bool Grounded = true;
         [Tooltip("Useful for rough ground")]
@@ -237,7 +237,7 @@ namespace StarterAssets
 
         private void Move()
         {
-            _speed = _input.sprint ? SprintSpeed : MoveSpeed;
+            _speed = MoveSpeed; //Input.sprint ? SprintSpeed : MoveSpeed;
 
             // normalise input direction
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;

@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        _playerController = LevelReferences.Instance.Player;
+        _playerController = LevelReferences.Instance.CurrentController;
     }
 
     private void OnEnable()
