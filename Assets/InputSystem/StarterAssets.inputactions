@@ -60,6 +60,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "SpecialInteract",
+                    "type": "Button",
+                    "id": "97dc52e7-b35e-4dd4-91e5-3ee039270aad",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "SwapTank",
                     "type": "Button",
                     "id": "d9a74afc-a1fe-44a8-9a1a-f83c51e393a1",
@@ -382,6 +391,17 @@
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "SwapDrone",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "91037d37-e5f9-483d-923e-aa2671d47c18",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "SpecialInteract",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -21,8 +21,13 @@ public class Interactor : MonoBehaviour
     {
         _input = LevelReferences.Instance.Input;
         _controller = GetComponent<RobotBaseController>();
+    }
+
+    private void Start()
+    {
         _robotType = _controller.RobotType;
-        _interactPrompt = LevelReferences.Instance.UIManager.PlayerHUD.InteractPrompt;
+        _interactPrompt = _controller.RobotHud.InteractPrompt;
+
     }
 
     private void OnEnable()
@@ -40,16 +45,32 @@ public class Interactor : MonoBehaviour
     {
         if (Physics.Linecast(_cameraRoot.transform.position, _cameraRoot.transform.position + _cameraRoot.transform.forward * _interactRange, out var hitInfo))
         {
-            _interactiveObject = hitInfo.transform.GetComponentInParent<InteractiveObject>();
-            Debug.Log("Interactive object valid : " + _interactiveObject != null +  " /n" + "Robot type valid : " + (_controller.RobotType == _interactiveObject.RobotNeeded));
+            if (_interactiveObject == null)
+            {
+                _interactiveObject = hitInfo.transform.GetComponentInParent<InteractiveObject>();
+            }
+
             if (_interactiveObject != null && _interactiveObject.Interactive && _controller.RobotType == _interactiveObject.RobotNeeded)
             {
+                _interactiveObject.SetInteractionReady(true);
                 _interactPrompt.enabled = true;
                 _interactPrompt.text = _interactiveObject.InteractPrompt;
             }
-            else _interactPrompt.enabled = false;
+            else
+            {
+                _interactPrompt.enabled = false;
+                if (_interactiveObject != null) _interactiveObject.SetInteractionReady(false);
+            }
         }
-        else _interactPrompt.enabled = false;
+        else
+        {
+            _interactPrompt.enabled = false;
+            if (_interactiveObject != null)
+            {
+                _interactiveObject.SetInteractionReady(false);
+                _interactiveObject = null;
+            }
+        }
     }
 
     private void Interact()

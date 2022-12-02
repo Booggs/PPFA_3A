@@ -38,7 +38,7 @@ public class LevelReferences : Singleton<LevelReferences>
     private RobotBaseController _tankController = null;
 
     [SerializeField]
-    private RobotBaseController _hackerController = null;
+    private HackerController _hackerController = null;
 
     [SerializeField]
     private DroneController _droneController = null;
@@ -57,10 +57,8 @@ public class LevelReferences : Singleton<LevelReferences>
         base.OnDestroy();
 
         // TODO AL : lazy, redo this properly
-        if (Gamepad.current != null)
-        {
-            Gamepad.current.SetMotorSpeeds(0f, 0f);
-        }
+        if (Gamepad.current == null) return;
+        Gamepad.current.SetMotorSpeeds(0f, 0f);
     }
 
     private new void Start()
@@ -95,6 +93,7 @@ public class LevelReferences : Singleton<LevelReferences>
             default:
                 break;
         }
+        _uiManager.SetPlayerHud(_currentRobotType);
         _currentController.enabled = true;
         _mainVirtualCamera.Follow = _currentController.CinemachineCameraTarget.transform;
     }

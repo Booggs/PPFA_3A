@@ -15,7 +15,7 @@ namespace StarterAssets
     {
         public ERobotType RobotType = ERobotType.Drone;
 
-        [Header("CurrentController")]
+        [Header("Controller")]
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 4.0f;
 
@@ -39,7 +39,7 @@ namespace StarterAssets
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         public float FallTimeout = 0.15f;
 
-        [Header("CurrentController Grounded")]
+        [Header("Grounded")]
         [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
         public bool Grounded = true;
         [Tooltip("Useful for rough ground")]
@@ -57,6 +57,9 @@ namespace StarterAssets
         [Tooltip("How far in degrees can you move the camera down")]
         public float BottomClamp = -90.0f;
 
+        [Header("HUD")]
+        [Tooltip("The HUD Menu associated with the robot")]
+        public PlayerHUDMenu RobotHud = null;
 
         // cinemachine
         private float _cinemachineTargetPitch;
@@ -83,6 +86,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         protected PlayerInput PlayerInput;
 #endif
+        private Interactor _interactor = null;
         private CharacterController _controller;
         private GameObject _mainCamera;
         private Timer _invertGravityTimer = new Timer();
@@ -115,6 +119,7 @@ namespace StarterAssets
             _gravityStrength = customGravity.GravityStrength;
             _groundedOffset *= -1;
             _invertGravityTimer.Start(1.0f);
+            _verticalVelocity = 0.0f;
             _controller.SimpleMove(_velocity * 50.0f);
             PlayerInput.DeactivateInput();
         }
@@ -127,12 +132,13 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+            _controller = GetComponent<CharacterController>();
             _customPlayerGravity = GetComponent<CustomPlayerGravity>();
+            _interactor = GetComponent<Interactor>();
         }
 
-        protected void Start()
+        protected virtual void Start()
         {
-            _controller = GetComponent<CharacterController>();
             Input = LevelReferences.Instance.Input;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
             PlayerInput = LevelReferences.Instance.PlayerInput;
@@ -151,12 +157,14 @@ namespace StarterAssets
 
         private void OnEnable()
         {
+            SetControllerPossessed(true);
             _customPlayerGravity.SetInvertGravity -= InvertGravityEnable;
             _customPlayerGravity.SetInvertGravity += InvertGravityEnable;
         }
 
         private void OnDisable()
         {
+            SetControllerPossessed(false);
             _customPlayerGravity.SetInvertGravity -= InvertGravityEnable;
         }
 
@@ -306,6 +314,11 @@ namespace StarterAssets
             {
                 _verticalVelocity += _gravityStrength * Time.deltaTime;
             }
+        }
+
+        protected virtual void SetControllerPossessed(bool possessed)
+        {
+            _interactor.enabled = possessed;
         }
 
         protected void CalculateVelocity()

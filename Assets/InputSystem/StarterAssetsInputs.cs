@@ -26,10 +26,10 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 
 		public delegate void InteractEvent();
-        public delegate void SpecificInteractEvent();
+        public delegate void SpecialInteractEvent();
 
 		public event InteractEvent Interact = null;
-		public event SpecificInteractEvent SpecificInteract = null;
+		public event SpecialInteractEvent SpecialInteract = null;
 
 		public void OnMove(InputValue value)
 		{
@@ -59,9 +59,9 @@ namespace StarterAssets
             Interact.Invoke();
         }
 
-        public void OnSpecificInteract()
+        public void OnSpecialInteract()
         {
-			SpecificInteract.Invoke();
+            SpecialInteract?.Invoke();
         }
 
         public void OnVerticalMove(InputValue value)

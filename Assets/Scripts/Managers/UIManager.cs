@@ -21,6 +21,15 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private PauseMenuManager _pauseMenu = null;
 
+    [SerializeField] 
+    private PlayerHUDMenu _tankHUD = null;
+
+    [SerializeField]
+    private PlayerHUDMenu _hackerHUD = null;
+
+    [SerializeField]
+    private PlayerHUDMenu _droneHUD = null;
+
 
     private bool _paused = false;
     private RobotBaseController _playerController = null;
@@ -31,6 +40,8 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         _playerController = LevelReferences.Instance.CurrentController;
+        _hackerHUD.SetActive(false);
+        _droneHUD.SetActive(false);
     }
 
     private void OnEnable()
@@ -42,6 +53,35 @@ public class UIManager : MonoBehaviour
     private void OnDisable()
     {
         _playerController.PauseMenuPerformed -= PauseMenuToggle;
+    }
+
+    public void SetPlayerHud(ERobotType robotType)
+    {
+        ShowPlayerHUD(false);
+        switch (robotType)
+        {
+            case ERobotType.Tank:
+            {
+                _playerHUD = _tankHUD;
+                break;
+            }
+
+            case ERobotType.Hacker:
+            {
+                _playerHUD = _hackerHUD;
+                break;
+                }
+
+            case ERobotType.Drone:
+            {
+                _playerHUD = _droneHUD;
+                break;
+            }
+
+            default:
+                break;
+        }
+        ShowPlayerHUD(true);
     }
 
     public void ShowPlayerHUD(bool isActive)

@@ -8,9 +8,7 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayerHUDMenu : AMenu
 {
-    [SerializeField] private HealthBarHUDMenu _healthBarHUDMenu = null;
     [SerializeField] private Text _interactPrompt = null;
 
-    public HealthBarHUDMenu HealthBarHUDMenu => _healthBarHUDMenu;
     public Text InteractPrompt => _interactPrompt;
 }

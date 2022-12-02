@@ -140,4 +140,5 @@ MonoBehaviour:
   CinemachineCameraTarget: {fileID: 3251034608361880915}
   TopClamp: 89
   BottomClamp: -89
+  RobotHud: {fileID: 0}
   _flightSpeed: 3

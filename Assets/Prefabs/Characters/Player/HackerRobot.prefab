@@ -25,7 +25,7 @@ PrefabInstance:
     - target: {fileID: 5004313646414619624, guid: fc159553e57141548a64e379d6979556,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.48
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5004313646414619624, guid: fc159553e57141548a64e379d6979556,
         type: 3}
@@ -77,6 +77,11 @@ PrefabInstance:
       propertyPath: m_Height
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5636593668289640792, guid: fc159553e57141548a64e379d6979556,
+        type: 3}
+      propertyPath: m_StepOffset
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 5636593668289640795, guid: fc159553e57141548a64e379d6979556,
         type: 3}
       propertyPath: RobotType
@@ -102,11 +107,18 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 0388e7039f55bad439a0da0aa2d109ac, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5636593668289640795, guid: fc159553e57141548a64e379d6979556, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: fc159553e57141548a64e379d6979556, type: 3}
 --- !u!1 &248399412326056749 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5636593668289640786, guid: fc159553e57141548a64e379d6979556,
+    type: 3}
+  m_PrefabInstance: {fileID: 5569626593875393151}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5585702442146314870 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 58317160948908041, guid: fc159553e57141548a64e379d6979556,
     type: 3}
   m_PrefabInstance: {fileID: 5569626593875393151}
   m_PrefabAsset: {fileID: 0}
@@ -122,5 +134,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3abed0c97150a045abd506b215176da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _robotNeeded: 2
+  RobotNeeded: 2
   _interactPrompt: Interact to pickup Hacker
+--- !u!114 &6388525712727687256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248399412326056749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195dda2791b124d43bfb96e5f7867812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HelperDeployed: 0
+  _cameraRoot: {fileID: 5585702442146314870}
+  _hackerHelperPrefab: {fileID: 1178662377840520304, guid: 639e01e8012a57b4f8cfd109d31afa9d,
+    type: 3}
+--- !u!114 &8922294062653699136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248399412326056749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db1e4e959c164af4daaa33205c3a1cc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RobotType: 1
+  MoveSpeed: 4
+  RotationSpeed: 1
+  SpeedChangeRate: 1000
+  JumpHeight: 1.2
+  JumpTimeout: 0.1
+  FallTimeout: 0.15
+  Grounded: 1
+  GroundedOffset: 0.25
+  GroundedRadius: 0.4
+  GroundLayers:
+    serializedVersion: 2
+    m_Bits: 513
+  CinemachineCameraTarget: {fileID: 5585702442146314870}
+  TopClamp: 90
+  BottomClamp: -90
+  RobotHud: {fileID: 0}
+  _helperDeployer: {fileID: 6388525712727687256}
