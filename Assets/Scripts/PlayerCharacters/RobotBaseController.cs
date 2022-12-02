@@ -153,19 +153,18 @@ namespace StarterAssets
             _groundedOffset = GroundedOffset;
             _gravityStrength = _customPlayerGravity.GravityStrength;
             _previousPosition = transform.position;
+            _customPlayerGravity.SetInvertGravity -= InvertGravityEnable;
+            _customPlayerGravity.SetInvertGravity += InvertGravityEnable;
         }
 
         private void OnEnable()
         {
             SetControllerPossessed(true);
-            _customPlayerGravity.SetInvertGravity -= InvertGravityEnable;
-            _customPlayerGravity.SetInvertGravity += InvertGravityEnable;
         }
 
         private void OnDisable()
         {
             SetControllerPossessed(false);
-            _customPlayerGravity.SetInvertGravity -= InvertGravityEnable;
         }
 
         protected void Update()

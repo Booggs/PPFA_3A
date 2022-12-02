@@ -33,7 +33,6 @@ public class HackerHelper : InteractiveObject
             {
                 _targetHackableObjects.Add(hackableObject);
                 _foundTarget = true;
-                Debug.Log("found object");
             }
         }
 

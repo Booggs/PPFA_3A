@@ -50,7 +50,7 @@ public class Interactor : MonoBehaviour
                 _interactiveObject = hitInfo.transform.GetComponentInParent<InteractiveObject>();
             }
 
-            if (_interactiveObject != null && _interactiveObject.Interactive && _controller.RobotType == _interactiveObject.RobotNeeded)
+            if (_interactiveObject != null && _interactiveObject.InteractionValid(_controller.RobotType))
             {
                 _interactiveObject.SetInteractionReady(true);
                 _interactPrompt.enabled = true;
@@ -75,7 +75,7 @@ public class Interactor : MonoBehaviour
 
     private void Interact()
     {
-        if (_interactiveObject == null || _interactiveObject.Interactive == false || _interactiveObject.RobotNeeded != _robotType) return;
+        if (_interactiveObject == null || _interactiveObject.InteractionValid(_controller.RobotType) == false) return;
         _interactiveObject.Interact(_robotType, this.gameObject, _controller);
     }
 }

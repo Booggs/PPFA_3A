@@ -31,4 +31,10 @@ public class InteractiveObject : MonoBehaviour
         if (_interactionReady == ready) return;
         _interactionReady = ready;
     }
+
+    public virtual bool InteractionValid(ERobotType robotType)
+    {
+        bool bInteractionValid = Interactive && robotType == RobotNeeded;
+        return bInteractionValid;
+    }
 }

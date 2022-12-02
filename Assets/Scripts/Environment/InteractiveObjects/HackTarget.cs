@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class HackTarget : MonoBehaviour
 {
+    [SerializeField] 
+    private int _hacksNeeded = 1;
+
+    private int _currentHacks = 0;
     private bool _hacked = false;
 
     public void SetHackStatus(bool status)
@@ -12,5 +16,11 @@ public class HackTarget : MonoBehaviour
 
         _hacked = status;
         gameObject.SetActive(!_hacked);
+    }
+
+    public void ModifyCurrentHacks(int hacksAmount)
+    {
+        _currentHacks += hacksAmount;
+        SetHackStatus(_currentHacks >= _hacksNeeded ? true : false);
     }
 }

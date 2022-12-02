@@ -21,7 +21,7 @@ public class HackableObject : InteractiveObject
         {
             foreach (var HackTarget in _targets)
             {
-                HackTarget.SetHackStatus(false);
+                HackTarget.ModifyCurrentHacks(-1);
             }
             _hacked = false;
         }
@@ -34,7 +34,7 @@ public class HackableObject : InteractiveObject
         _hacked = !_hacked;
         foreach (var HackTarget in _targets)
         {
-            if (HackTarget != null) HackTarget.SetHackStatus(_hacked);
+            if (HackTarget != null) HackTarget.ModifyCurrentHacks(_hacked ? 1 : -1);
         }
     }
 

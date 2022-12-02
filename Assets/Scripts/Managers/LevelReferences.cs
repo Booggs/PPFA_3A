@@ -24,6 +24,9 @@ public class LevelReferences : Singleton<LevelReferences>
     [SerializeField]
     private UIManager _uiManager = null;
 
+    [SerializeField] 
+    private MoneyManager _moneyManager = null;
+
     [SerializeField]
     private PlayerInput _playerInput;
 
@@ -51,6 +54,7 @@ public class LevelReferences : Singleton<LevelReferences>
     public PlayerInput PlayerInput => _playerInput;
     public StarterAssetsInputs Input => _input;
     public ERobotType CurrentRobotType => _currentRobotType;
+    public MoneyManager MoneyManager => _moneyManager;
 
     protected override void OnDestroy()
     {

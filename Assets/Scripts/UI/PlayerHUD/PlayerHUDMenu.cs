@@ -9,6 +9,19 @@ using UnityEngine.UI;
 public class PlayerHUDMenu : AMenu
 {
     [SerializeField] private Text _interactPrompt = null;
+    [SerializeField] private Text _moneyDisplay = null;
 
     public Text InteractPrompt => _interactPrompt;
+
+    private void Start()
+    {
+        LevelReferences.Instance.MoneyManager.AddMoneyEvent -= UpdateMoney;
+        LevelReferences.Instance.MoneyManager.AddMoneyEvent += UpdateMoney;
+        _moneyDisplay.text = 0.ToString();
+    }
+
+    public void UpdateMoney(int amount)
+    {
+        _moneyDisplay.text = amount.ToString();
+    }
 }
