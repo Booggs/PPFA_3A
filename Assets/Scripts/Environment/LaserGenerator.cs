@@ -5,6 +5,9 @@ using UnityEngine;
 public class LaserGenerator : MonoBehaviour
 {
     [SerializeField] 
+    private float _laserDistance = 100.0f;
+
+    [SerializeField] 
     private LineRenderer _lineRenderer = null;
 
     [SerializeField] 
@@ -24,9 +27,9 @@ public class LaserGenerator : MonoBehaviour
     {
         _lineRenderer.SetPosition(0, transform.position);
         bool wallHit;
-        wallHit = Physics.Raycast(transform.position, transform.forward * 10.0f, out RaycastHit hitInfo, 10.0f, _layerMask);
+        wallHit = Physics.Raycast(transform.position, transform.forward * _laserDistance, out RaycastHit hitInfo, _laserDistance, _layerMask);
 
-        _lineRenderer.SetPosition(1, wallHit ? hitInfo.point : transform.position + transform.forward * 10.0f);
+        _lineRenderer.SetPosition(1, wallHit ? hitInfo.point : transform.position + transform.forward * _laserDistance);
         _laserCollider.transform.position = transform.position + transform.forward * (hitInfo.distance / 2);
         _laserCollider.size = new Vector3(0.25f, 1.0f, hitInfo.distance);
     }
