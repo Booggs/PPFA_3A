@@ -17,7 +17,7 @@ public class HackableObject : InteractiveObject
     public override void SetInteractionReady(bool ready)
     {
         base.SetInteractionReady(ready);
-        if (InteractReady == false && _remoteHacked == false)
+        if (InteractReady == false && _remoteHacked == false && _hacked == true)
         {
             foreach (var HackTarget in _targets)
             {
