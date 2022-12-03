@@ -66,12 +66,12 @@ namespace StarterAssets
 
         // player
         protected float _verticalVelocity;
+        protected bool _controllerPossessed = false;
         private float _speed;
         private float _rotationVelocity;
         private float _groundedOffset;
         private readonly float _terminalVelocity = 53.0f;
         private bool _invertGravity = false;
-        private bool _controllerPossessed = false;
         private Vector3 _velocity = Vector3.zero;
         private Vector3 _previousPosition = Vector3.zero;
 
@@ -155,16 +155,6 @@ namespace StarterAssets
             _previousPosition = transform.position;
             _customPlayerGravity.SetInvertGravity -= InvertGravityEnable;
             _customPlayerGravity.SetInvertGravity += InvertGravityEnable;
-        }
-
-        private void OnEnable()
-        {
-            SetControllerPossessed(true);
-        }
-
-        private void OnDisable()
-        {
-            SetControllerPossessed(false);
         }
 
         protected void Update()
@@ -260,7 +250,7 @@ namespace StarterAssets
             _controller.Move((_controllerPossessed ? inputDirection.normalized * (_speed * Time.deltaTime) : new Vector3(0, 0, 0)) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
 
-        protected void JumpAndGravity()
+        protected virtual void JumpAndGravity()
         {
             if (Grounded)
             {
@@ -274,7 +264,7 @@ namespace StarterAssets
                 }
 
                 // Jump
-                if (Input.jump && _jumpTimeoutDelta <= 0.0f && LevelReferences.Instance.CurrentController == this)
+                if (Input.jump && _jumpTimeoutDelta <= 0.0f && _controllerPossessed)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2.0f * Mathf.Abs(_gravityStrength) * -1.0f) * (_invertGravity == true ? -1.0f : 1.0f);
@@ -315,9 +305,10 @@ namespace StarterAssets
             }
         }
 
-        protected virtual void SetControllerPossessed(bool possessed)
+        public virtual void SetControllerPossessed(bool possessed)
         {
-            _interactor.enabled = possessed;
+            _controllerPossessed = possessed;
+            _interactor.enabled = _controllerPossessed;
         }
 
         protected void CalculateVelocity()

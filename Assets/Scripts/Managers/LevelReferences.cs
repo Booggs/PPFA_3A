@@ -69,6 +69,7 @@ public class LevelReferences : Singleton<LevelReferences>
     {
         base.Start();
         _mainVirtualCamera.Follow = _currentController.CinemachineCameraTarget.transform;
+        _currentController.SetControllerPossessed(true);
     }
 
     public void ChangeController(ERobotType robotType)
@@ -76,6 +77,7 @@ public class LevelReferences : Singleton<LevelReferences>
         if (_currentRobotType == robotType) return;
 
         _currentRobotType = robotType;
+        _currentController.SetControllerPossessed(false);
 
         switch (_currentRobotType)
         {
@@ -94,6 +96,7 @@ public class LevelReferences : Singleton<LevelReferences>
             default:
                 break;
         }
+        _currentController.SetControllerPossessed(true);
         _uiManager.SetPlayerHud(_currentRobotType);
         _mainVirtualCamera.Follow = _currentController.CinemachineCameraTarget.transform;
     }

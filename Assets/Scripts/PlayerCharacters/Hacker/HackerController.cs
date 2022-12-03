@@ -9,9 +9,30 @@ public class HackerController : RobotBaseController
     [SerializeField]
     private HelperDeployer _helperDeployer = null;
 
-    protected override void SetControllerPossessed(bool possessed)
+    private bool _hackerCarried = false;
+
+    protected void Start()
+    {
+        base.Start();
+        RobotCarry carryComponent = GetComponent<RobotCarry>();
+        carryComponent.ObjectCarryEvent -= HackerCarried;
+        carryComponent.ObjectCarryEvent += HackerCarried;
+    }
+
+    public override void SetControllerPossessed(bool possessed)
     {
         base.SetControllerPossessed(possessed);
-        _helperDeployer.enabled = possessed;
+        _helperDeployer.enabled = _controllerPossessed;
+    }
+
+    private void HackerCarried(bool carried)
+    {
+        _hackerCarried = carried;
+    }
+
+    protected override void JumpAndGravity()
+    {
+        if (_hackerCarried) return;
+        base.JumpAndGravity();
     }
 }
