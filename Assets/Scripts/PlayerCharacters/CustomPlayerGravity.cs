@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using StarterAssets;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ public class CustomPlayerGravity : MonoBehaviour
     private bool _zeroGravity = false;
     private bool _invertGravity = false;
     private float _startingGravityStrength = -15.0f;
+    private CharacterController _controller = null;
 
     public float GravityStrength => _gravityStrength;
     public bool ZeroGravity => _zeroGravity;
@@ -65,8 +67,14 @@ public class CustomPlayerGravity : MonoBehaviour
     private void Start()
     {
         _startingGravityStrength = _gravityStrength;
+        _controller = GetComponent<CharacterController>();
     }
 
+    private void Update()
+    {
+
+    }
+    
     public void EnableZeroGravity(bool zeroGravity)
     {
         if (_customGravityActive == false) return;

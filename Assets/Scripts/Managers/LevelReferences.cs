@@ -69,8 +69,6 @@ public class LevelReferences : Singleton<LevelReferences>
     {
         base.Start();
         _mainVirtualCamera.Follow = _currentController.CinemachineCameraTarget.transform;
-        _droneController.enabled = false;
-        _hackerController.enabled = false;
     }
 
     public void ChangeController(ERobotType robotType)
@@ -78,7 +76,6 @@ public class LevelReferences : Singleton<LevelReferences>
         if (_currentRobotType == robotType) return;
 
         _currentRobotType = robotType;
-        _currentController.enabled = false;
 
         switch (_currentRobotType)
         {
@@ -98,7 +95,6 @@ public class LevelReferences : Singleton<LevelReferences>
                 break;
         }
         _uiManager.SetPlayerHud(_currentRobotType);
-        _currentController.enabled = true;
         _mainVirtualCamera.Follow = _currentController.CinemachineCameraTarget.transform;
     }
 }

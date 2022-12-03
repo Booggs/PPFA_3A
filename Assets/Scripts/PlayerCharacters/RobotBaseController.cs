@@ -71,6 +71,7 @@ namespace StarterAssets
         private float _groundedOffset;
         private readonly float _terminalVelocity = 53.0f;
         private bool _invertGravity = false;
+        private bool _controllerPossessed = false;
         private Vector3 _velocity = Vector3.zero;
         private Vector3 _previousPosition = Vector3.zero;
 
@@ -118,9 +119,8 @@ namespace StarterAssets
             _invertGravity = enable;
             _gravityStrength = customGravity.GravityStrength;
             _groundedOffset *= -1;
-            _invertGravityTimer.Start(1.0f);
+            _invertGravityTimer.Start(0.5f);
             _verticalVelocity = 0.0f;
-            _controller.SimpleMove(_velocity * 50.0f);
             PlayerInput.DeactivateInput();
         }
         #endregion
@@ -194,7 +194,7 @@ namespace StarterAssets
         private void CameraRotation()
         {
             // if there is an input
-            if (Input.look.sqrMagnitude >= _threshold)
+            if (Input.look.sqrMagnitude >= _threshold && _controllerPossessed)
             {
                 //Don't multiply mouse input by Time.deltaTime
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
@@ -257,7 +257,7 @@ namespace StarterAssets
             }
             
             // move the player
-            _controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            _controller.Move((_controllerPossessed ? inputDirection.normalized * (_speed * Time.deltaTime) : new Vector3(0, 0, 0)) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
 
         protected void JumpAndGravity()
@@ -274,7 +274,7 @@ namespace StarterAssets
                 }
 
                 // Jump
-                if (Input.jump && _jumpTimeoutDelta <= 0.0f)
+                if (Input.jump && _jumpTimeoutDelta <= 0.0f && LevelReferences.Instance.CurrentController == this)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2.0f * Mathf.Abs(_gravityStrength) * -1.0f) * (_invertGravity == true ? -1.0f : 1.0f);

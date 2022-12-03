@@ -41,7 +41,6 @@ public class InvertGravityZone : MonoBehaviour
             CustomPlayerGravity customGravity;
             if ((customGravity = collider.GetComponentInParent<CustomPlayerGravity>()) != null)
             {
-                Debug.Log("Found custom gravity");
                 customGravity.EnableInvertGravity(_zoneEnabled);
             }
         }
