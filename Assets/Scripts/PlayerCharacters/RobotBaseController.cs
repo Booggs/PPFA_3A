@@ -157,7 +157,7 @@ namespace StarterAssets
             _customPlayerGravity.SetInvertGravity += InvertGravityEnable;
         }
 
-        protected void Update()
+        protected virtual void Update()
         {
             CalculateVelocity();
             JumpAndGravity();

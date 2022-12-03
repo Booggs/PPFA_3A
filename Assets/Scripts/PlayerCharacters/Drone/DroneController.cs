@@ -18,6 +18,7 @@ public class DroneController : RobotBaseController
 
     private new void Update()
     {
+        if (_controllerPossessed == false) return;
         CalculateVelocity();
         DroneFlight();
         Move();

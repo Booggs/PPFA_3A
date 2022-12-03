@@ -11,7 +11,7 @@ public class HackerController : RobotBaseController
 
     private bool _hackerCarried = false;
 
-    protected void Start()
+    protected override void Start()
     {
         base.Start();
         RobotCarry carryComponent = GetComponent<RobotCarry>();
@@ -30,9 +30,9 @@ public class HackerController : RobotBaseController
         _hackerCarried = carried;
     }
 
-    protected override void JumpAndGravity()
+    protected override void Update()
     {
         if (_hackerCarried) return;
-        base.JumpAndGravity();
+        base.Update();
     }
 }
