@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RobotNeeded: 2
-  _interactPrompt: Interact to pickup Hacker
+  _interactPrompt: Interact to pickup/drop Hacker
 --- !u!114 &6388525712727687256
 MonoBehaviour:
   m_ObjectHideFlags: 0
