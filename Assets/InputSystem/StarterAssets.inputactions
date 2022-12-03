@@ -323,7 +323,7 @@
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "VerticalMove",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -334,7 +334,7 @@
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "VerticalMove",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -363,11 +363,33 @@
                 },
                 {
                     "name": "",
+                    "id": "e5ea4fee-313e-42c5-8000-bea91c126147",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "5698525d-309e-4cbc-805a-0fbd35756d15",
                     "path": "<Keyboard>/1",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
+                    "action": "SwapTank",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "263799f4-4c56-46bc-8914-6a8aa8dc0691",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
                     "action": "SwapTank",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -385,6 +407,17 @@
                 },
                 {
                     "name": "",
+                    "id": "857b0f2b-bbe0-4908-9d90-2ba361d707bf",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SwapHacker",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "4ba1c723-347e-409e-94d9-863b5d5274aa",
                     "path": "<Keyboard>/3",
                     "interactions": "",
@@ -396,11 +429,33 @@
                 },
                 {
                     "name": "",
+                    "id": "3380273d-1f19-46d9-be15-0e3b7e00f4d6",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SwapDrone",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "91037d37-e5f9-483d-923e-aa2671d47c18",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
+                    "action": "SpecialInteract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f4b09873-61f9-445b-ae8c-6b272d43be97",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
                     "action": "SpecialInteract",
                     "isComposite": false,
                     "isPartOfComposite": false
