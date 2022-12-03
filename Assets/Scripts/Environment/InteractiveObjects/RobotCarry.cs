@@ -21,6 +21,6 @@ public class RobotCarry : InteractiveObject
             transform.SetParent(robot.transform);
         }
         else transform.parent = null;
-        ObjectCarryEvent.Invoke(_carried);
+        if (ObjectCarryEvent != null) ObjectCarryEvent.Invoke(_carried);
     }
 }
