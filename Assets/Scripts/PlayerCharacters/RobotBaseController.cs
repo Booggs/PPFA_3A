@@ -90,7 +90,6 @@ namespace StarterAssets
         private Interactor _interactor = null;
         private CharacterController _controller;
         private GameObject _mainCamera;
-        private Timer _invertGravityTimer = new Timer();
 
         private const float _threshold = 0.01f;
 
@@ -119,9 +118,7 @@ namespace StarterAssets
             _invertGravity = enable;
             _gravityStrength = customGravity.GravityStrength;
             _groundedOffset *= -1;
-            _invertGravityTimer.Start(0.5f);
             _verticalVelocity = 0.0f;
-            PlayerInput.DeactivateInput();
         }
         #endregion
 
@@ -163,10 +160,6 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
-            if (_invertGravityTimer.Update() && _invertGravityTimer.CurrentState == Timer.State.Finished)
-            {
-                PlayerInput.ActivateInput();
-            }
         }
 
         private void LateUpdate()
@@ -223,8 +216,6 @@ namespace StarterAssets
             // accelerate or decelerate to target speed
             if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
             {
-                // creates curved result rather than a linear one giving a more organic speed change
-                // note T in Lerp is clamped, so we don't need to clamp our speed
                 _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
 
                 // round speed to 3 decimal places
@@ -238,8 +229,6 @@ namespace StarterAssets
             // normalise input direction
             Vector3 inputDirection = new Vector3(Input.move.x, 0.0f, Input.move.y).normalized;
 
-            // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            // if there is a move input rotate player when the player is moving
             if (Input.move != Vector2.zero)
             {
                 // move
@@ -330,7 +319,6 @@ namespace StarterAssets
             Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
 
             Gizmos.color = Grounded ? transparentGreen : transparentRed;
-            _groundedOffset = GroundedOffset;
             // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
             Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - _groundedOffset, transform.position.z), GroundedRadius);
         }

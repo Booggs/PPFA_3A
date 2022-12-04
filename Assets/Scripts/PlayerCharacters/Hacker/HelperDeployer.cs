@@ -43,7 +43,8 @@ public class HelperDeployer : MonoBehaviour
             _hackerHelper = null;
             HelperDeployed = false;
         }
-        else if (Physics.Linecast(_cameraRoot.transform.position, _cameraRoot.transform.position + _cameraRoot.transform.forward * 3.0f, out var hitInfo))
+        else if (Physics.Linecast(_cameraRoot.transform.position, 
+                     _cameraRoot.transform.position + _cameraRoot.transform.forward * 3.0f, out var hitInfo))
         {
             GameObject hackerHelperGameObject;
             hackerHelperGameObject = Instantiate<GameObject>(_hackerHelperPrefab, hitInfo.point, Quaternion.identity);

@@ -27,7 +27,8 @@ public class LaserGenerator : MonoBehaviour
     {
         _lineRenderer.SetPosition(0, transform.position);
         bool wallHit;
-        wallHit = Physics.Raycast(transform.position, transform.forward * _laserDistance, out RaycastHit hitInfo, _laserDistance, _layerMask);
+        wallHit = Physics.Raycast(transform.position, 
+            transform.forward * _laserDistance, out RaycastHit hitInfo, _laserDistance, _layerMask);
 
         _lineRenderer.SetPosition(1, wallHit ? hitInfo.point : transform.position + transform.forward * _laserDistance);
         _laserCollider.transform.position = transform.position + transform.forward * (hitInfo.distance / 2);

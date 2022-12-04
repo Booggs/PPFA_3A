@@ -10,7 +10,7 @@ public class Interactor : MonoBehaviour
 {
     [SerializeField] private float _interactRange = 2.0f;
     [SerializeField] private GameObject _cameraRoot = null;
-
+    
     private InteractiveObject _interactiveObject;
     private StarterAssetsInputs _input;
     private RobotBaseController _controller;
@@ -43,7 +43,8 @@ public class Interactor : MonoBehaviour
 
     private void Update()
     {
-        if (Physics.Linecast(_cameraRoot.transform.position, _cameraRoot.transform.position + _cameraRoot.transform.forward * _interactRange, out var hitInfo))
+        if (Physics.Linecast(_cameraRoot.transform.position, 
+                _cameraRoot.transform.position + _cameraRoot.transform.forward * _interactRange, out var hitInfo))
         {
             if (_interactiveObject == null)
             {
