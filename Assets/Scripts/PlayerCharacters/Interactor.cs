@@ -11,6 +11,7 @@ public class Interactor : MonoBehaviour
     [SerializeField] private float _interactRange = 2.0f;
     [SerializeField] private GameObject _cameraRoot = null;
 
+    private bool _active = false;
     private InteractiveObject _interactiveObject;
     private StarterAssetsInputs _input;
     private RobotBaseController _controller;

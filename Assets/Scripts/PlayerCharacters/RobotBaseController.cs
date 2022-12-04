@@ -223,8 +223,6 @@ namespace StarterAssets
             // accelerate or decelerate to target speed
             if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
             {
-                // creates curved result rather than a linear one giving a more organic speed change
-                // note T in Lerp is clamped, so we don't need to clamp our speed
                 _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
 
                 // round speed to 3 decimal places
@@ -238,8 +236,6 @@ namespace StarterAssets
             // normalise input direction
             Vector3 inputDirection = new Vector3(Input.move.x, 0.0f, Input.move.y).normalized;
 
-            // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            // if there is a move input rotate player when the player is moving
             if (Input.move != Vector2.zero)
             {
                 // move

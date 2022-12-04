@@ -85,7 +85,7 @@ PrefabInstance:
     - target: {fileID: 5636593668289640793, guid: fc159553e57141548a64e379d6979556,
         type: 3}
       propertyPath: _interactRange
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8319598550440229696, guid: fc159553e57141548a64e379d6979556,
         type: 3}
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RobotType: 2
-  MoveSpeed: 4
+  MoveSpeed: 6
   RotationSpeed: 1
   SpeedChangeRate: 100
   JumpHeight: 1.2
@@ -146,4 +146,4 @@ MonoBehaviour:
   TopClamp: 89
   BottomClamp: -89
   RobotHud: {fileID: 0}
-  _flightSpeed: 3
+  _flightSpeed: 6
