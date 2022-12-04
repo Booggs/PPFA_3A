@@ -17,6 +17,7 @@ public class HackerController : RobotBaseController
         RobotCarry carryComponent = GetComponent<RobotCarry>();
         carryComponent.ObjectCarryEvent -= HackerCarried;
         carryComponent.ObjectCarryEvent += HackerCarried;
+        _helperDeployer.enabled = false;
     }
 
     public override void SetControllerPossessed(bool possessed)

@@ -50,13 +50,6 @@ public class HackerHelper : InteractiveObject
                 _lineRenderer.SetPosition(i + i + 1, hackableObject.transform.position);
             }
         }
-        /* 0 -> 0 | 1
-         * 1 -> 2 | 3
-         * 2 -> 4 | 5
-         * 3 -> 6 | 7
-         * 4 -> 8 | 9
-         * 5 -> 10 | 11
-         */
     }
 
     public void DeactivateHelper()
@@ -80,15 +73,5 @@ public class HackerHelper : InteractiveObject
     {
         base.Interact(robotType, robot, controller);
         Destroy(gameObject);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
-        Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
-
-        Gizmos.color = _foundTarget ? transparentGreen : transparentRed;
-        // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
-        Gizmos.DrawSphere(transform.position, _hackingRadius);
     }
 }
